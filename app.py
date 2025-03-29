@@ -106,6 +106,116 @@ def abrir_arquivo(arquivo):
     print(f"Abrindo o arquivo: {arquivo}")
     # Aqui você pode implementar o código para abrir o arquivo, como usar `os` para abrir com o programa associado.
 
+def excluir_resenha(id_resenha):
+    conexao = sqlite3.connect("resenhas.db")
+    cursor = conexao.cursor()
+    cursor.execute("DELETE FROM resenhas WHERE id = ?", (id_resenha,))
+    conexao.commit()
+    conexao.close()
+    
+    print(f"Resenha com ID {id_resenha} excluída.")
+    carregar_resenhas()  # Atualiza a lista de resenhas na tela
+
+def editar_resenha(id_resenha):
+    print(f"Editando resenha com ID: {id_resenha}")
+    # Aqui você pode abrir uma nova janela para editar a resenha
+
+# Agora chame carregar_resenhas() corretamente
+def carregar_resenhas():
+    for widget in frame_resenhas.winfo_children():
+        widget.destroy()
+
+    conexao = sqlite3.connect("resenhas.db")
+    cursor = conexao.cursor()
+    cursor.execute("SELECT id, autor, livro, resenha, arquivo FROM resenhas")
+    resenhas = cursor.fetchall()
+    conexao.close()
+
+    for resenha in resenhas:
+        id_resenha, autor, livro, texto_resenha, arquivo = resenha
+        arquivo = arquivo if arquivo else ""
+
+        frame_item = ctk.CTkFrame(frame_resenhas)
+        frame_item.pack(pady=5, padx=5, fill="x")
+
+        label_texto = ctk.CTkLabel(frame_item, text=f"{autor} - {livro}: {texto_resenha[:30]}...", anchor="w")
+        label_texto.pack(side="left", padx=10)
+
+        botao_editar = ctk.CTkButton(frame_item, text="✏️", width=30, command=lambda id=id_resenha: editar_resenha(id))
+        botao_editar.pack(side="right", padx=5)
+
+        botao_excluir = ctk.CTkButton(frame_item, text="🗑️", width=30, fg_color="red", command=lambda id=id_resenha: excluir_resenha(id))
+        botao_excluir.pack(side="right", padx=5)
+
+        if arquivo:
+            botao_arquivo = ctk.CTkButton(frame_item, text="Abrir Arquivo", width=100, command=lambda arq=arquivo: abrir_arquivo(arq))
+            botao_arquivo.pack(side="right", padx=5)
+
+
+def editar_resenha(id_resenha):
+    # Criando a janela de edição
+    janela_edicao = ctk.CTkToplevel(app)
+    janela_edicao.title("Editar Resenha")
+    janela_edicao.geometry("400x400")
+
+    # Conectando ao banco para obter os dados atuais
+    conexao = sqlite3.connect("resenhas.db")
+    cursor = conexao.cursor()
+    cursor.execute("SELECT autor, livro, resenha, arquivo FROM resenhas WHERE id = ?", (id_resenha,))
+    resenha_atual = cursor.fetchone()
+    conexao.close()
+
+    if not resenha_atual:
+        return  # Se não encontrar a resenha, apenas sai
+
+    autor_atual, livro_atual, resenha_texto, arquivo_atual = resenha_atual
+
+    # Campos de edição
+    ctk.CTkLabel(janela_edicao, text="Autor").pack()
+    campo_autor_edicao = ctk.CTkEntry(janela_edicao)
+    campo_autor_edicao.insert(0, autor_atual)
+    campo_autor_edicao.pack()
+
+    ctk.CTkLabel(janela_edicao, text="Livro").pack()
+    campo_livro_edicao = ctk.CTkEntry(janela_edicao)
+    campo_livro_edicao.insert(0, livro_atual)
+    campo_livro_edicao.pack()
+
+    ctk.CTkLabel(janela_edicao, text="Resenha").pack()
+    campo_resenha_edicao = ctk.CTkTextbox(janela_edicao, height=100, width=300)
+    campo_resenha_edicao.insert("1.0", resenha_texto)
+    campo_resenha_edicao.pack()
+
+    ctk.CTkLabel(janela_edicao, text="Arquivo").pack()
+    campo_arquivo_edicao = ctk.CTkEntry(janela_edicao)
+    campo_arquivo_edicao.insert(0, arquivo_atual if arquivo_atual else "")
+    campo_arquivo_edicao.pack()
+
+    # Função para salvar edição
+    def salvar_edicao():
+        novo_autor = campo_autor_edicao.get()
+        novo_livro = campo_livro_edicao.get()
+        nova_resenha = campo_resenha_edicao.get("1.0", "end-1c")
+        novo_arquivo = campo_arquivo_edicao.get()
+
+        if novo_autor and novo_livro and nova_resenha:
+            conexao = sqlite3.connect("resenhas.db")
+            cursor = conexao.cursor()
+            cursor.execute("""
+                UPDATE resenhas 
+                SET autor = ?, livro = ?, resenha = ?, arquivo = ? 
+                WHERE id = ?
+            """, (novo_autor, novo_livro, nova_resenha, novo_arquivo, id_resenha))
+            conexao.commit()
+            conexao.close()
+
+            carregar_resenhas()  # Atualiza a tela principal
+            janela_edicao.destroy()  # Fecha a janela de edição
+
+    # Botão para salvar alterações
+    botao_salvar = ctk.CTkButton(janela_edicao, text="Salvar", command=salvar_edicao)
+    botao_salvar.pack(pady=10)
+
 # Criando janela
 app = ctk.CTk()
 app.title("Sistema de Resenhas")

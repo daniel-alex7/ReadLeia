@@ -1,4 +1,4 @@
-('C:\\Users\\Daniel Silva\\Desktop\\Resenha\\build\\app\\PYZ-00.pyz',
+('C:\\Users\\Daniel Silva\\Desktop\\ReadLeia\\build\\app\\PYZ-00.pyz',
  [('__future__',
    'C:\\Users\\Daniel '
    'Silva\\AppData\\Local\\Programs\\Python\\Python313-32\\Lib\\__future__.py',
