@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import sqlite3
 
+
 # Configuração inicial
 ctk.set_appearance_mode('dark')
 
@@ -221,11 +222,12 @@ app = ctk.CTk()
 app.title("Sistema de Resenhas")
 app.geometry("500x500")
 
-# Tela de login
+# Tela de login pro enqunto o usuário é somente um
 tela_login = ctk.CTkFrame(app)
-tela_login.pack(pady=10)
+tela_login.pack(pady=10) #pady define o espaçamento entre itens
 
-label_usu = ctk.CTkLabel(tela_login, text="Usuário")
+label_usu = ctk.CTkLabel(tela_login, text="Usuário") #Label é uma funcionalidade semenlhante ao conceito do HTML
+
 label_usu.pack()
 
 campo_usu = ctk.CTkEntry(tela_login, placeholder_text="Digite seu usuário:")
