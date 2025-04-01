@@ -18,8 +18,8 @@ def criar_tabela():
             arquivo TEXT
         )
     """)
-    conexao.commit()
-    conexao.close()
+    conexao.commit() #Inicia banco de dados da aplicação        
+    conexao.close() #Sai do banco de dados
 
 # Função para adicionar coluna 'arquivo' se não existir
 def adicionar_coluna_arquivo():
@@ -107,6 +107,7 @@ def abrir_arquivo(arquivo):
     print(f"Abrindo o arquivo: {arquivo}")
     # Aqui você pode implementar o código para abrir o arquivo, como usar `os` para abrir com o programa associado.
 
+# Função de Excluir resenhas 
 def excluir_resenha(id_resenha):
     conexao = sqlite3.connect("resenhas.db")
     cursor = conexao.cursor()
@@ -117,6 +118,7 @@ def excluir_resenha(id_resenha):
     print(f"Resenha com ID {id_resenha} excluída.")
     carregar_resenhas()  # Atualiza a lista de resenhas na tela
 
+#Função para editar resenha
 def editar_resenha(id_resenha):
     print(f"Editando resenha com ID: {id_resenha}")
     # Aqui você pode abrir uma nova janela para editar a resenha
