@@ -251,22 +251,27 @@ resultado_login.pack()
 tela_principal = ctk.CTkFrame(app)
 
 # Campo para adicionar resenha
+#AUTOR
 ctk.CTkLabel(tela_principal, text="Autor").pack()
 campo_autor = ctk.CTkEntry(tela_principal, placeholder_text="Nome do Autor")
 campo_autor.pack()
 
+#LIVRO
 ctk.CTkLabel(tela_principal, text="Livro").pack()
 campo_livro = ctk.CTkEntry(tela_principal, placeholder_text="Nome do Livro")
 campo_livro.pack()
 
+#RESENHA
 ctk.CTkLabel(tela_principal, text="Resenha").pack()
 campo_resenha = ctk.CTkTextbox(tela_principal, height=100, width=300)
 campo_resenha.pack()
 
+#ARQUIVO
 ctk.CTkLabel(tela_principal, text="Arquivo").pack()
 campo_arquivo = ctk.CTkEntry(tela_principal, placeholder_text="Caminho do arquivo (opcional)")
 campo_arquivo.pack()
 
+#BOTÃO DE REGISTRAR
 botao_resgitrar = ctk.CTkButton(tela_principal, text="Registrar", command=registrar_resenha)
 botao_resgitrar.pack(pady=10)
 
@@ -274,6 +279,7 @@ botao_resgitrar.pack(pady=10)
 frame_resenhas = ctk.CTkFrame(tela_principal)
 frame_resenhas.pack(fill="both", expand=True, pady=10)
 
+#BOTÃO DE LOGOOF
 botao_logout = ctk.CTkButton(tela_principal, text="Sair", command=lambda: mostrar_tela(tela_login))
 botao_logout.pack(pady=10)
 
