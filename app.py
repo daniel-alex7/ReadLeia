@@ -1,5 +1,17 @@
 import customtkinter as ctk
 import sqlite3
+import os
+import sqlite3
+from PIL import Image  # IMPORTANTE: Adicione este import
+import pytesseract
+
+
+# Força o Python a encontrar o Tcl/Tk ignorando o espaço no nome do usuário
+os.environ['TCL_LIBRARY'] = r"C:\Users\DANIEL~1\AppData\Local\Programs\Python\Python313-32\tcl\tcl8.6"
+os.environ['TK_LIBRARY'] = r"C:\Users\DANIEL~1\AppData\Local\Programs\Python\Python313-32\tcl\tk8.6"
+
+# O restante do seu código continua igual abaixo:
+app = ctk.CTk()
 
 
 # Configuração inicial
@@ -103,9 +115,75 @@ def carregar_resenhas():
             botao_arquivo.pack(side="right", padx=5)
 
 # Função para abrir arquivo (exemplo de como você pode implementá-la)
-def abrir_arquivo(arquivo):
-    print(f"Abrindo o arquivo: {arquivo}")
-    # Aqui você pode implementar o código para abrir o arquivo, como usar `os` para abrir com o programa associado.
+def abrir_arquivo(caminho_arquivo):
+    print(f"Processando o arquivo: {caminho_arquivo}")
+    
+    # Verifica se o arquivo realmente existe
+    if not os.path.exists(caminho_arquivo):
+        print("Erro: Arquivo não encontrado.")
+        return
+
+    # Extensões de imagem comuns para aplicar o OCR
+    extensoes_imagem = ['.jpg', '.jpeg', '.png', '.bmp', '.tiff']
+    _, extensao = os.path.splitext(caminho_arquivo.lower())
+
+    if extensao in extensoes_imagem:
+        try:
+            # 1. Abre a imagem usando a Pillow
+            imagem = Image.open(caminho_arquivo)
+            
+            # 2. Executa o OCR para extrair o texto da imagem
+            # O parâmetro 'lang' pode ser alterado (ex: 'por' para português, se tiver o pacote instalado)
+            texto_extraido = pytesseract.image_to_string(imagem, lang='por')
+            
+            # Se não extrair nada, avisa o usuário
+            if not texto_extraido.strip():
+                texto_extraido = "[Não foi possível extrair nenhum texto legível desta imagem.]"
+
+            # 3. Abre uma nova janela do CustomTkinter para exibir o texto do OCR
+            janela_ocr = ctk.CTkToplevel(app)
+            janela_ocr.title("Texto Extraído via OCR")
+            janela_ocr.geometry("500x400")
+            janela_ocr.lift()  # Garante que a janela fique na frente
+            
+            ctk.CTkLabel(janela_ocr, text="Texto detectado na foto da resenha:", font=("Arial", 14, "bold")).pack(pady=10)
+            
+            # Caixa de texto para o usuário ler e até copiar se quiser
+            caixa_texto = ctk.CTkTextbox(janela_ocr, width=460, height=300)
+            caixa_texto.insert("1.0", texto_extraido)
+            caixa_texto.pack(pady=10, padx=10)
+            
+        except Exception as e:
+            print(f"Erro ao processar o OCR da imagem: {e}")
+            # Fallback: Se der erro no OCR, tenta abrir o arquivo normalmente no sistema
+            os.startfile(caminho_arquivo) if hasattr(os, 'startfile') else os.system(f'open "{caminho_arquivo}"')
+            
+    else:
+        # Se for um arquivo de texto, PDF ou outro formato, abre com o programa padrão do sistema
+        try:
+            if hasattr(os, 'startfile'):  # Windows
+                os.startfile(caminho_arquivo)
+            else:  # Mac / Linux
+                import subprocess
+                opener = "open" if sys.platform == "darwin" else "xdg-open"
+                subprocess.call([opener, caminho_arquivo])
+        except Exception as e:
+            print(f"Erro ao abrir o arquivo: {e}")
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 def excluir_resenha(id_resenha):
     conexao = sqlite3.connect("resenhas.db")
