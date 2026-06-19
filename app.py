@@ -30,8 +30,8 @@ def criar_tabela():
             arquivo TEXT
         )
     """)
-    conexao.commit()
-    conexao.close()
+    conexao.commit() #Inicia banco de dados da aplicação        
+    conexao.close() #Sai do banco de dados
 
 # Função para adicionar coluna 'arquivo' se não existir
 def adicionar_coluna_arquivo():
@@ -185,6 +185,7 @@ def abrir_arquivo(caminho_arquivo):
     
     
 
+# Função de Excluir resenhas 
 def excluir_resenha(id_resenha):
     conexao = sqlite3.connect("resenhas.db")
     cursor = conexao.cursor()
@@ -195,6 +196,7 @@ def excluir_resenha(id_resenha):
     print(f"Resenha com ID {id_resenha} excluída.")
     carregar_resenhas()  # Atualiza a lista de resenhas na tela
 
+#Função para editar resenha
 def editar_resenha(id_resenha):
     print(f"Editando resenha com ID: {id_resenha}")
     # Aqui você pode abrir uma nova janela para editar a resenha
@@ -327,22 +329,27 @@ resultado_login.pack()
 tela_principal = ctk.CTkFrame(app)
 
 # Campo para adicionar resenha
+#AUTOR
 ctk.CTkLabel(tela_principal, text="Autor").pack()
 campo_autor = ctk.CTkEntry(tela_principal, placeholder_text="Nome do Autor")
 campo_autor.pack()
 
+#LIVRO
 ctk.CTkLabel(tela_principal, text="Livro").pack()
 campo_livro = ctk.CTkEntry(tela_principal, placeholder_text="Nome do Livro")
 campo_livro.pack()
 
+#RESENHA
 ctk.CTkLabel(tela_principal, text="Resenha").pack()
 campo_resenha = ctk.CTkTextbox(tela_principal, height=100, width=300)
 campo_resenha.pack()
 
+#ARQUIVO
 ctk.CTkLabel(tela_principal, text="Arquivo").pack()
 campo_arquivo = ctk.CTkEntry(tela_principal, placeholder_text="Caminho do arquivo (opcional)")
 campo_arquivo.pack()
 
+#BOTÃO DE REGISTRAR
 botao_resgitrar = ctk.CTkButton(tela_principal, text="Registrar", command=registrar_resenha)
 botao_resgitrar.pack(pady=10)
 
@@ -350,6 +357,7 @@ botao_resgitrar.pack(pady=10)
 frame_resenhas = ctk.CTkFrame(tela_principal)
 frame_resenhas.pack(fill="both", expand=True, pady=10)
 
+#BOTÃO DE LOGOOF
 botao_logout = ctk.CTkButton(tela_principal, text="Sair", command=lambda: mostrar_tela(tela_login))
 botao_logout.pack(pady=10)
 
